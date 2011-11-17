@@ -7,7 +7,7 @@ void inflateMesh(WETriangleMesh mesh, int IDOffset) {
     Vec3D v1 = f.b.sub(f.a);
     Vec3D v2 = f.c.sub(f.a);
     float area = (v1.cross(v2)).magnitude() * .5;
-    Vec3D force = f.normal.scale(.2 * area);
+    Vec3D force = f.normal.scale(.3 * area);
     physics.particles.get(f.a.id + IDOffset).addForce(force);
     physics.particles.get(f.b.id + IDOffset).addForce(force);
     physics.particles.get(f.c.id + IDOffset).addForce(force);
@@ -77,6 +77,12 @@ void cleanUpSubdivision(WETriangleMesh mesh, float minDist) {
         }
       }
     }
+  }
+}
+
+void stopParticles() {
+  for (VerletParticle p : physics.particles) {
+    p.clearVelocity();
   }
 }
 

@@ -36,6 +36,7 @@ void draw() {
   background(255);
   balloon.inflateBalloon();
   physics.update();
+  stopParticles();
 
   balloon.centerBalloon();
 
