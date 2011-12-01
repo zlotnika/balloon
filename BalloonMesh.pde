@@ -7,26 +7,28 @@ class BalloonMesh {
   int IDOffset;
   float scaleSize = .5;
   float invScaleSize = 1/scaleSize;
+  int subdivisions = 0;
+  String filename;
 
-
-  BalloonMesh(String filename) {
+  BalloonMesh(String _filename) {
+    filename = _filename;
     inputMesh = PShapeToRMesh(filename, scaleSize);
     initBalloon(0);
   }
-/*
+  /*
   void curveBoundaryIn(WETriangleMesh mesh) {
-    for (WEVertex v : getBoundaryVertices(mesh)) {
-      ((WEVertex) v).set(new Vec3D(v.x, v.y, 0));
-    }
-  }
-*/
+   for (WEVertex v : getBoundaryVertices(mesh)) {
+   ((WEVertex) v).set(new Vec3D(v.x, v.y, 0));
+   }
+   }
+   */
   void attachSpringsToBoundary() {
     for (WingedEdge e : side1.edges.values()) {
       if (e.faces.size() == 1) {
 
         VerletParticle a = physics.particles.get(((WEVertex) e.a).id);
         VerletParticle b = physics.particles.get(((WEVertex) side2.getClosestVertexToPoint(e.a)).id + IDOffset);
-        physics.addSpring(new VerletSpringUpdatable(a, b, 0, 1));
+        physics.addSpring(new VerletSpring(a, b, 0, 1));
       }
     }
   }
@@ -37,23 +39,10 @@ class BalloonMesh {
     Vec3D totalCent = cent1.add(cent2);  
 
     totalCent.scaleSelf(-.4);
-    //print(totalCent);
 
     for (VerletParticle p : physics.particles) {
       p.set(p.add(totalCent));
     }
-    /*
-    side1.translate(totalCent);
-     side2.translate(totalCent);
-     
-     for (Vertex v : balloon.side1.vertices.values()) {
-     physics.particles.get(v.id).set(v);
-     }
-     
-     for (Vertex v : balloon.side2.vertices.values()) {
-     physics.particles.get(v.id + IDOffset).set(v);
-     }
-     */
   }
 
   void moveBalloon() {
@@ -66,7 +55,8 @@ class BalloonMesh {
     inflateMesh(side2, IDOffset);
   }
 
-  void initBalloon(int subdivisions) {
+  void initBalloon(int newSubdiv) {
+    subdivisions = newSubdiv;
     side1 = initMesh(inputMesh, subdivisions, 1, invScaleSize);
     side2 = initMesh(inputMesh, subdivisions, -1, invScaleSize);
 
@@ -74,11 +64,17 @@ class BalloonMesh {
     // get us some physics
     initPhysics(side1, 0);
     IDOffset = physics.particles.size();
-
     initPhysics(side2, IDOffset);
 
     // add the second to the first mesh
     attachSpringsToBoundary();
+  }
+
+  void reScale(float newScale) {
+    scaleSize = newScale;
+    invScaleSize = 1/scaleSize;
+    inputMesh = PShapeToRMesh(filename, scaleSize);
+    initBalloon(subdivisions);
   }
 }
 

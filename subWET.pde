@@ -4,6 +4,7 @@ class WETriangleMeshText extends WETriangleMesh {
     this.invScaleSize = invScaleSize;
   }
 
+  //every time we split a face, this reconstructs the texture coordinates
   protected void splitFace(WEFace f, WingedEdge e, List<Vec3D> midPoints) {
     Vec2D uvA = new Vec2D(e.a.x * invScaleSize, e.a.y * invScaleSize);
     Vec2D uvB = new Vec2D(e.b.x * invScaleSize, e.b.y * invScaleSize);
@@ -37,6 +38,7 @@ class WETriangleMeshText extends WETriangleMesh {
     }
   }
 
+  //if we want to try to fix the triangles
   void fixTexture() {
     for (Face f : faces) {
       Vec2D[] uvOrder = orderUVCoordinates(f.a, f.b, f.c, f.uvA, f.uvB, f.uvC);

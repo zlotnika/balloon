@@ -8,6 +8,7 @@ import toxi.physics.constraints.*;
 import toxi.processing.*;
 import geomerative.*;
 import toxi.util.*;
+import controlP5.*;
 
 PeasyCam cam;
 PImage picture;
@@ -15,10 +16,24 @@ VerletPhysics physics;
 AttractionBehavior inflate;
 ToxiclibsSupport gfx;
 
+//controllers
+ControlP5 controller;
+ControlWindow controlWindow;
+Toggle inflateToggle;
+Toggle textureToggle;
+Button resizeButton;
+Button pauseButton;
+Boolean pause = false;
+Boolean reSize = false;
+Button subdivideButton;
+Boolean sub = false;
+
 BalloonMesh balloon;
-boolean doesInflate = false;
-boolean isWireFrame = true;
-int subdiv = 0;
+String inputOutline;
+boolean Inflate = false;
+boolean Texture = false;
+int Subdivisions = 0;
+float Scale;
 
 void setup() {
   size(800, 800, P3D);
@@ -27,119 +42,60 @@ void setup() {
   PeasyCam cam = new PeasyCam(this, 100);
   gfx = new ToxiclibsSupport(this);
   RG.init(this);
-
-  picture = loadImage("air-swimmers-125x125.jpg");
-
   physics = new VerletPhysics();
   physics.setWorldBounds(new AABB(new Vec3D(), 100));
 
-  balloon = new BalloonMesh("clownFish4.svg");
+  //controllers
+  initControllers();
+
+  //inputs
+  newInput();
 }
 
 void draw() {
   background(255);
   reEstablishNormals(balloon.side1);
   reEstablishNormals(balloon.side2);
-  if (doesInflate == true) {
+  //move the particles
+  if (Inflate == true) {
     balloon.inflateBalloon();
   }
   physics.update();
-
-
   stopParticles();
-
+  if (pause == true){
+    pauseParticles();
+    pause = false;
+  }
   balloon.centerBalloon();
-
+  //move the mesh to the particles
   balloon.moveBalloon();
-
-
+  //display the mesh
   stroke(0);
   noFill();
   box(100);
 
-  if (isWireFrame == false) {
+  if (Texture == true) {
     noStroke();
     lights();
-    //displayMeshWithTexture(balloon.side1,picture);
     gfx.texturedMesh(balloon.side1, picture, true);
-
     gfx.texturedMesh(balloon.side2, picture, true);
   }
-
   else {
     stroke(255, 0, 0);
     gfx.mesh(balloon.side1, true);
     stroke(0, 0, 255);
     gfx.mesh(balloon.side2, true);
   }
-}
 
-void keyPressed() {
-  //inflation
-  if (key=='i') {
-    if (doesInflate == false) {
-      doesInflate = true;
-    }
-    else { 
-      doesInflate = false;
-    }
+  //do buttons
+  if (reSize == true) {
+    balloon.reScale(Scale);
+    reSize = false;
   }
-  //color
-  if (key=='c') {
-    if (isWireFrame == false) {
-      isWireFrame = true;
-    }
-    else { 
-      isWireFrame = false;
-    }
-  }
-  //pause
-  if (key=='p') {
-    if (physics.particles.get(0).isLocked()) {
-      for (VerletParticle p : physics.particles) {
-        p.unlock();
-      }
-    }
-    else {
-      for (VerletParticle p : physics.particles) {
-        p.lock();
-      }
-    }
-  }
-  //restart
-  if (key == 'r') {
-    balloon.initBalloon(subdiv); 
-    print(subdiv);
-  }
-  //save
-  if (key == 's') {
-    balloon.side1.saveAsSTL(sketchPath("balloon-" + DateUtils.timeStamp() + ".stl"));
-  }
-  if (key>='0' && key<='6') {
-
-    switch(key) {
-    case '0':
-      subdiv = 0;
-      break;
-    case '1':
-      subdiv = 1;
-      break;  
-    case '2':
-      subdiv = 2;
-      break;
-    case '3':
-      subdiv = 3;
-      break;
-    case '4':
-      subdiv = 4;
-      break;
-    case '5':
-      subdiv = 5;
-      break;
-    case '6':
-      subdiv = 6;
-      break;
-    }
+  if (sub == true) {
+    balloon.initBalloon(Subdivisions); 
+    println("Restarted with " + Subdivisions + " subdivisions.");
+    sub = false;
   }
 }
 

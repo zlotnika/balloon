@@ -1,37 +1,11 @@
-RMesh SVGToRMesh(String filename, float scaleSize) {
-  // input the SVG
-  RShape inputShape = RG.loadShape(filename);
-  //print(inputShape.children[0].countPaths());
-  //inputShape = inputShape.children[0];
-  // get us to the correct child
-
-  while ( inputShape.countPaths () == 0 ) {
-    inputShape = inputShape.children[0];
-  }
-
-  //print(inputShape.countPaths());
-
-  // scale it down
-  RShape scaledShape = scaleShape(inputShape, scaleSize);
-  // make it an RMesh
-  RMesh Rmesh = scaledShape.toMesh();
-  // convert it to a WETriangleMesh for each side
-  return Rmesh;
-}
-
 WETriangleMeshText initMesh(RMesh Rmesh, int subdiv, float offset, float invScaleSize) {
-
   WETriangleMeshText mesh = convertMesh(Rmesh, invScaleSize);
 
   for (int i=0;i<subdiv;i++) {
     mesh.subdivide(2);
     //mesh.fixTexture();
   }
-
-  //center mesh
   centerMesh(mesh, offset);
-
-
   return mesh;
 }
 
@@ -64,7 +38,7 @@ WETriangleMeshText convertMesh(RMesh oldMesh, float invScaleSize) {
       Vec2D uvB = new Vec2D(triStrip.vertices[i+1].x * invScaleSize, triStrip.vertices[i+1].y * invScaleSize);
       VerletParticle c = new VerletParticle(triStrip.vertices[i+2].x, triStrip.vertices[i+2].y, 0);
       Vec2D uvC = new Vec2D(triStrip.vertices[i+2].x * invScaleSize, triStrip.vertices[i+2].y * invScaleSize);
-        //newMesh.addFace(a, b, c, uvA, uvB, uvC);
+      //newMesh.addFace(a, b, c, uvA, uvB, uvC);
 
       if (i%2 == 0) {
         newMesh.addFace(a, b, c, uvA, uvB, uvC);
@@ -128,5 +102,26 @@ WETriangleMeshText convertMesh(RMesh oldMesh, float invScaleSize) {
   }
 
   return newMesh;
+}
+
+String inputString(String prompt) {
+  String loadPath = selectInput(prompt);  // Opens file chooser
+  if (loadPath == null) {
+    // If a file was not selected
+    println("No file was selected...");
+    exit();
+    return null;
+  } 
+  else 
+    // If a file was selected, print path to file
+    return loadPath;
+  
+}
+
+void newInput(){
+  inputOutline = inputString("What shape would you like to use?");
+  String inputPicture = inputString("And what coloring would you like?");
+  picture = loadImage(inputPicture);
+  balloon = new BalloonMesh(inputOutline);
 }
 

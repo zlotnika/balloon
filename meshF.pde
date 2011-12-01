@@ -1,43 +1,31 @@
-
-void displayMeshWithTexture(WETriangleMesh mesh, PImage picture) {
-  textureMode(IMAGE);
-  for (Face f : mesh.faces) {
-    
-        //print(f.uvA + "," + f.uvB + ";");
-    beginShape();
-    texture(picture); 
-
-    vertex(f.a.x, f.a.y, f.a.z, f.uvA.x, f.uvA.y);
-    vertex(f.b.x, f.b.y, f.b.z, f.uvB.x, f.uvB.y);
-    vertex(f.c.x, f.c.y, f.c.z, f.uvC.x, f.uvC.y);
-    endShape();
-
-  }
-}
-
 void inflateMesh(WETriangleMesh mesh, int IDOffset) {
-  /*
-  for (VerletParticle p : physics.particles) {
-    p.clearForce();
-  }*/
+  Boolean inBound = false;
   for (Face f : mesh.faces) {
     Vec3D v1 = f.b.sub(f.a);
     Vec3D v2 = f.c.sub(f.a);
-    float area = (v1.cross(v2)).magnitude() * .2;
-    Vec3D force = f.normal.scale(.3 * area);
+    float area = (v1.cross(v2)).magnitude() * .5;
+    Vec3D force = f.normal.scale(.1 * area);
+    
+    //add the force to the particles
+    /*
+    for(Vertex v : f.getVertices(new Vertex[3])){
+      inBound = false;
+      for(Vertex w : getBoundaryVertices(mesh)){
+        if (w == v){
+          inBound = true;
+        }
+      }
+      if(inBound == true){
+            physics.particles.get(v.id + IDOffset).addForce(new Vec3D(force.x * 2.0,force.y * 2.0,0));
+      }else{
+            physics.particles.get(v.id + IDOffset).addForce(force);
+      }
+    }*/
     physics.particles.get(f.a.id + IDOffset).addForce(force);
     physics.particles.get(f.b.id + IDOffset).addForce(force);
     physics.particles.get(f.c.id + IDOffset).addForce(force);
   }
-  /*
-  for (Vertex v : getBoundaryVertices(mesh)) {
-    VerletParticle p = physics.particles.get(v.id + IDOffset);
-    Vec3D f = p.getVelocity();
-    p.clearVelocity();
-    p.addVelocity(new Vec3D(2*f.x, 2*f.y, 0.0));
-  }*/
 }
-
 
 void moveMesh(WETriangleMesh mesh, int IDOffset) {
   for (Vertex v : mesh.vertices.values()) {
@@ -59,7 +47,7 @@ void initPhysics(WETriangleMesh mesh, int IDOffset) {
   for (WingedEdge e : mesh.edges.values()) {
     VerletParticle a = physics.particles.get(((WEVertex) e.a).id + IDOffset);
     VerletParticle b = physics.particles.get(((WEVertex) e.b).id + IDOffset);
-    physics.addSpring(new VerletSpringUpdatable(a, b, a.distanceTo(b), 1f));
+    physics.addSpring(new VerletSpring(a, b, a.distanceTo(b), 1f));
   }
 }
 
@@ -87,31 +75,32 @@ WEVertex[] getBoundaryVertices(WETriangleMesh mesh) {
   return boundaryVertices;
 }
 
-void cleanUpSubdivision(WETriangleMesh mesh, float minDist) {
-  boolean inBound = false;
-  List<Vertex> remove = new ArrayList<Vertex>();
-  for (int i = 0 ; i < mesh.vertices.size() - 1; i++) {
-    Vertex v = mesh.getVertexForID(i);
-    for (Vertex bound : getBoundaryVertices(mesh)) {
-      if (v == bound) {
-      }
-      else {
-        for (int j = i+1 ; j < mesh.vertices.size() ; j++) {
-          Vertex other = mesh.getVertexForID(j);
-          if ((v.distanceTo(other) < minDist) && (v != other) ) {
-            remove.add(v);
-            mesh.removeVertices(remove);
-            remove.remove(0);
-          }
-        }
-      }
-    }
-  }
-}
-
 void stopParticles() {
   for (VerletParticle p : physics.particles) {
     p.clearVelocity();
   }
 }
 
+float computeSurfaceArea(TriangleMesh mesh){
+  float SA = 0;
+  float area;
+  for(Face f : mesh.faces){
+    Vec3D v1 = f.b.sub(f.a);
+    Vec3D v2 = f.c.sub(f.a);
+    area = (v1.cross(v2)).magnitude() * .5;
+    SA += area;
+  }
+  return SA;
+}
+
+float computeVolume(TriangleMesh mesh){
+  float V = 0;
+  float area;
+  for(Face f : mesh.faces){
+    Vec3D v1 = f.b.sub(f.a);
+    Vec3D v2 = f.c.sub(f.a);
+    area = (v1.cross(v2)).magnitude() * .5;
+    V += (area * f.getCentroid().z);
+  }
+  return V;
+}

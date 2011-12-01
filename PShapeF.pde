@@ -5,17 +5,9 @@ RMesh PShapeToRMesh(String filename, float scaleSize) {
   //inputShape = inputShape.children[0];
   // get us to the correct child
   //print(inputShape.getChild(1).getVertexCount());
-  /*
-  PShape newShape = inputShape;
-   int i = 0;
-   while (newShape.getVertexCount() == 0) {
-   if (inputShape.getChild(i) == inputShape.getChild(-1)){
-   inputShape
-   }
-   }
-   */
+  PShape vertexShape = findVertices(inputShape);
   // scale it down
-  RShape scaledShape = scalePShapeToRShape(inputShape.getChild(1), scaleSize);
+  RShape scaledShape = scalePShapeToRShape(vertexShape, scaleSize);
   // make it an RMesh
   RMesh Rmesh = scaledShape.toMesh();
   // convert it to a WETriangleMesh for each side
@@ -36,3 +28,23 @@ RShape scalePShapeToRShape( PShape oldShape, float scaleSize) {
 
   return newShape;
 }
+
+PShape findVertices(PShape oldShape) {
+  PShape newShape = oldShape;
+  Boolean found = false;
+  while (found == false) {
+    for (PShape s : oldShape.getChildren() ) {
+      if (s.getVertexCount() > newShape.getVertexCount()) {
+        newShape = s;
+      }
+    }
+    if (newShape.getVertexCount() > 0) {
+      found = true;
+    }
+    else {
+      newShape = newShape.getChild(0);
+    }
+  }
+  return newShape;
+}
+
