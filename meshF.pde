@@ -1,3 +1,4 @@
+//These are functions for meshes which can be used by the BalloonMesh class
 void inflateMesh(WETriangleMesh mesh, int IDOffset) {
   Boolean inBound = false;
   for (Face f : mesh.faces) {
@@ -8,6 +9,8 @@ void inflateMesh(WETriangleMesh mesh, int IDOffset) {
     
     //add the force to the particles
     /*
+    //This might be important for getting the correct forces, but slows everything down too much
+    //we have a close enough approximation to physics without it
     for(Vertex v : f.getVertices(new Vertex[3])){
       inBound = false;
       for(Vertex w : getBoundaryVertices(mesh)){

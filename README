@@ -1,1 +1,8 @@
-Hi
+Welcome to this Balloon simulator!
+
+In order to use the simulation, you will need 2 things:
+1) an outline of the seam of the balloon (.svg)
+2) a picture to be textured onto the balloon (.jpg or .png)
+These will need to have the same coordinates (no resizing). I would recommend saving just one layer of an Illustrator or Inkscape for the outline, and exporting the whole thing for the texture.
+
+Once input, you can subdivide, resize, inflate, and texture the balloon. I recommend not making it too large while using a high amount of subdivisions - this is an easy way to make it crash. When saved, it is exported as .stl. The surface area and volume values are approximate.

@@ -1,16 +1,14 @@
+//These functions help the input by manipulating the PShape input (SVG)
 RMesh PShapeToRMesh(String filename, float scaleSize) {
   // input the SVG
   PShape inputShape = loadShape(filename);
-  //print(inputShape.children[0].countPaths());
-  //inputShape = inputShape.children[0];
   // get us to the correct child
-  //print(inputShape.getChild(1).getVertexCount());
   PShape vertexShape = findVertices(inputShape);
   // scale it down
   RShape scaledShape = scalePShapeToRShape(vertexShape, scaleSize);
   // make it an RMesh
   RMesh Rmesh = scaledShape.toMesh();
-  // convert it to a WETriangleMesh for each side
+  // convert it to a WETriangleMesh
   return Rmesh;
 }
 
@@ -23,9 +21,7 @@ RShape scalePShapeToRShape( PShape oldShape, float scaleSize) {
     newHandles[i] = newHandle;
   }
   RPath newPath = new RPath(newHandles);
-  //print(newHandles.length);
   newShape.addPath(newPath);
-
   return newShape;
 }
 

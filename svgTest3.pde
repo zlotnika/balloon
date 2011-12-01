@@ -3,17 +3,15 @@ import toxi.geom.*;
 import toxi.geom.mesh.subdiv.*;
 import toxi.geom.mesh.*;
 import toxi.physics.*;
-import toxi.physics.behaviors.*;
 import toxi.physics.constraints.*;
 import toxi.processing.*;
 import geomerative.*;
 import toxi.util.*;
 import controlP5.*;
 
+//initialize packages
 PeasyCam cam;
-PImage picture;
 VerletPhysics physics;
-AttractionBehavior inflate;
 ToxiclibsSupport gfx;
 
 //controllers
@@ -22,18 +20,23 @@ ControlWindow controlWindow;
 Toggle inflateToggle;
 Toggle textureToggle;
 Button resizeButton;
-Button pauseButton;
-Boolean pause = false;
+Toggle pauseToggle;
 Boolean reSize = false;
 Button subdivideButton;
 Boolean sub = false;
-
-BalloonMesh balloon;
-String inputOutline;
+Boolean newBoolean = false;
+Textlabel outputText;
+String outputNumber = "0";
 boolean Inflate = false;
 boolean Texture = false;
 int Subdivisions = 0;
+boolean Pause = false;
 float Scale;
+
+//initialize other variables
+PImage picture;
+BalloonMesh balloon;
+String inputOutline;
 
 void setup() {
   size(800, 800, P3D);
@@ -57,14 +60,16 @@ void draw() {
   reEstablishNormals(balloon.side1);
   reEstablishNormals(balloon.side2);
   //move the particles
-  if (Inflate == true) {
+  if (Inflate) {
     balloon.inflateBalloon();
   }
   physics.update();
   stopParticles();
-  if (pause == true){
+  if (Pause) {
     pauseParticles();
-    pause = false;
+  }
+  else {
+    resumeParticles();
   }
   balloon.centerBalloon();
   //move the mesh to the particles
@@ -74,7 +79,7 @@ void draw() {
   noFill();
   box(100);
 
-  if (Texture == true) {
+  if (Texture) {
     noStroke();
     lights();
     gfx.texturedMesh(balloon.side1, picture, true);
@@ -96,6 +101,10 @@ void draw() {
     balloon.initBalloon(Subdivisions); 
     println("Restarted with " + Subdivisions + " subdivisions.");
     sub = false;
+  }
+  if (newBoolean == true) {
+    newBoolean = false;
+    setup();
   }
 }
 

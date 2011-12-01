@@ -1,3 +1,4 @@
+//This extension of WETriangleMesh allows us to subdivide and re-establish texture mapping coordinates
 class WETriangleMeshText extends WETriangleMesh {
   float invScaleSize;
   WETriangleMeshText(float invScaleSize) {
@@ -39,6 +40,7 @@ class WETriangleMeshText extends WETriangleMesh {
   }
 
   //if we want to try to fix the triangles
+  //This method is still in a testing stage and should not be trusted
   void fixTexture() {
     for (Face f : faces) {
       Vec2D[] uvOrder = orderUVCoordinates(f.a, f.b, f.c, f.uvA, f.uvB, f.uvC);

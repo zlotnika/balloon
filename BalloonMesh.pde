@@ -1,4 +1,5 @@
-
+//This class is a combination of 2 mesh sides, physical particles and springs mapping to the vertices and edges of the meshes, and a texture
+//We input using an SVG filename. As we manipulate, scaleSize keeps our texture coordinates.
 class BalloonMesh {
   WETriangleMeshText side1;
   WETriangleMeshText side2;

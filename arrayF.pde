@@ -1,4 +1,4 @@
-
+//these are helper functions for the input functions (mostly convertMesh)
 int[] removeInt(int[] oldArray, int index) {
   int[] newArray;
   int[] part1;

@@ -1,3 +1,4 @@
+//These are the various functions used to convert from the SVG to Mesh
 WETriangleMeshText initMesh(RMesh Rmesh, int subdiv, float offset, float invScaleSize) {
   WETriangleMeshText mesh = convertMesh(Rmesh, invScaleSize);
 
@@ -19,7 +20,6 @@ RShape scaleShape( RShape oldShape, float scaleSize) {
       newHandles[i] = newHandle;
     }
     RPath newPath = new RPath(newHandles);
-    //print(newHandles.length);
     newShape.addPath(newPath);
   }
   return newShape;
@@ -115,7 +115,6 @@ String inputString(String prompt) {
   else 
     // If a file was selected, print path to file
     return loadPath;
-  
 }
 
 void newInput(){
