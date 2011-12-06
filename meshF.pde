@@ -99,9 +99,15 @@ float computeSurfaceArea(TriangleMesh mesh){
 float computeVolume(TriangleMesh mesh){
   float V = 0;
   float area;
+  Vec3D A;
+  Vec3D B;
+  Vec3D C;
   for(Face f : mesh.faces){
-    Vec3D v1 = f.b.sub(f.a);
-    Vec3D v2 = f.c.sub(f.a);
+    A = new Vec3D(f.a.x,f.a.y,0);
+    B = new Vec3D(f.b.x,f.b.y,0);
+    C = new Vec3D(f.c.x,f.b.y,0);
+    Vec3D v1 = B.sub(A);
+    Vec3D v2 = C.sub(A);
     area = (v1.cross(v2)).magnitude() * .5;
     V += (area * f.getCentroid().z);
   }

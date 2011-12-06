@@ -2,10 +2,11 @@
 WETriangleMeshText initMesh(RMesh Rmesh, int subdiv, float offset, float invScaleSize) {
   WETriangleMeshText mesh = convertMesh(Rmesh, invScaleSize);
 
-  for (int i=0;i<subdiv;i++) {
+  for (int i=0;i<subdiv-1;i++) {
     mesh.subdivide(2);
     //mesh.fixTexture();
   }
+  mesh.subdivide(1);
   centerMesh(mesh, offset);
   return mesh;
 }
@@ -118,9 +119,9 @@ String inputString(String prompt) {
 }
 
 void newInput(){
-  inputOutline = inputString("What shape would you like to use?");
-  String inputPicture = inputString("And what coloring would you like?");
-  picture = loadImage(inputPicture);
-  balloon = new BalloonMesh(inputOutline);
+  //inputOutline = inputString("What shape would you like to use?");
+  //String inputPicture = inputString("And what coloring would you like?");
+  picture = loadImage("air-swimmers-125x125.jpg");
+  balloon = new BalloonMesh("clownFish4.svg");
 }
 

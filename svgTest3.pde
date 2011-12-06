@@ -8,14 +8,18 @@ import toxi.processing.*;
 import geomerative.*;
 import toxi.util.*;
 import controlP5.*;
+import processing.opengl.*;
 
 //initialize packages
 PeasyCam cam;
 VerletPhysics physics;
 ToxiclibsSupport gfx;
+PMatrix3D currCameraMatrix;
+PGraphics3D g3;
 
 //controllers
 ControlP5 controller;
+ControlGroup controlBox;
 ControlWindow controlWindow;
 Toggle inflateToggle;
 Toggle textureToggle;
@@ -26,7 +30,7 @@ Button subdivideButton;
 Boolean sub = false;
 Boolean newBoolean = false;
 Textlabel outputText;
-String outputNumber = "0";
+String outputNumber = "";
 boolean Inflate = false;
 boolean Texture = false;
 int Subdivisions = 0;
@@ -39,9 +43,10 @@ BalloonMesh balloon;
 String inputOutline;
 
 void setup() {
-  size(800, 800, P3D);
+  size(800, 800, OPENGL);
 
   //just initialize everything
+  g3 = (PGraphics3D)g;
   PeasyCam cam = new PeasyCam(this, 100);
   gfx = new ToxiclibsSupport(this);
   RG.init(this);
@@ -56,6 +61,8 @@ void setup() {
 }
 
 void draw() {
+  hint(ENABLE_DEPTH_TEST);
+  pushMatrix();
   background(255);
   reEstablishNormals(balloon.side1);
   reEstablishNormals(balloon.side2);
@@ -77,7 +84,7 @@ void draw() {
   //display the mesh
   stroke(0);
   noFill();
-  box(100);
+  box(50);
 
   if (Texture) {
     noStroke();
@@ -106,5 +113,14 @@ void draw() {
     newBoolean = false;
     setup();
   }
+  popMatrix();
+  hint(DISABLE_DEPTH_TEST);
+  gui();
 }
 
+void gui() {
+   currCameraMatrix = new PMatrix3D(g3.camera);
+   camera();
+   controller.draw();
+   g3.camera = currCameraMatrix;
+}

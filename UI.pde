@@ -1,33 +1,42 @@
 //This gives our controller window
 void initControllers() {
+  PFont font = createFont("",30);
+  textFont(font);
+  
+  //get our box to work in
   controller = new ControlP5(this);
-  controlWindow = controller.addControlWindow("Control Window", 100, 800, 1000, 150);
-  controlWindow.setBackground(0);
-  Slider subSlider = controller.addSlider("Subdivisions", 0, 5, 0, 100, 10, 10, 100);
-  subSlider.setWindow(controlWindow);
-  subSlider.setNumberOfTickMarks(6);
-  subdivideButton = controller.addButton("Subdivide", Subdivisions, 200, 100, 80, 10 );
-  subdivideButton.setWindow(controlWindow);
-  Slider scaleSlider = controller.addSlider("Scale", 0.0, 1.0, 0.5, 300, 10, 10, 100);
-  scaleSlider.setWindow(controlWindow);
-  resizeButton = controller.addButton("ReSize", Scale, 400, 100, 80, 10);
-  resizeButton.setWindow(controlWindow);
-  inflateToggle = controller.addToggle("Inflate", false, 400, 10, 10, 10);
-  inflateToggle.setWindow(controlWindow);
-  textureToggle = controller.addToggle("Texture", false, 500, 10, 10, 10);
-  textureToggle.setWindow(controlWindow);
-  pauseToggle = controller.addToggle("Pause", false, 600, 10, 10, 10);
-  pauseToggle.setWindow(controlWindow);
-  Button saveButton = controller.addButton("Save", 0, 700, 10, 80, 10);
-  saveButton.setWindow(controlWindow);
-  Button areaButton = controller.addButton("SurfaceArea", 0, 500, 100, 80, 10);
-  areaButton.setWindow(controlWindow);
-  Button volumeButton = controller.addButton("Volume", 0, 600, 100, 80, 10);
-  volumeButton.setWindow(controlWindow);
-  Button newButton = controller.addButton("New", 0, 700, 10, 80, 10);
-  newButton.setWindow(controlWindow);
-  outputText = controller.addTextlabel("label", outputNumber, 700, 100);
-  outputText.setWindow(controlWindow);
+  controlBox = controller.addGroup("Control Box",0,height-149,800);
+  controlBox.setBackgroundHeight(150);
+  controlBox.setBackgroundColor(color(0,100));
+  controlBox.hideBar();
+  
+  //buttons and stuff
+  Slider subSlider = controller.addSlider("Subdivisions", 0, 8, 0, 50, 10, 10, 100);
+  subSlider.moveTo(controlBox);
+  subSlider.setNumberOfTickMarks(9);
+  subdivideButton = controller.addButton("Subdivide", Subdivisions, 100, 100, 70, 10 );
+  subdivideButton.moveTo(controlBox);
+  Slider scaleSlider = controller.addSlider("Scale", 0.0, 1.0, 0.5, 250, 10, 10, 100);
+  scaleSlider.moveTo(controlBox);
+  resizeButton = controller.addButton("ReSize", Scale, 300, 100, 70, 10);
+  resizeButton.moveTo(controlBox);
+  inflateToggle = controller.addToggle("Inflate", false, 300, 10, 10, 10);
+  inflateToggle.moveTo(controlBox);
+  textureToggle = controller.addToggle("Texture", false, 400, 10, 10, 10);
+  textureToggle.moveTo(controlBox);
+  pauseToggle = controller.addToggle("Pause", false, 500, 10, 10, 10);
+  pauseToggle.moveTo(controlBox);
+  Button saveButton = controller.addButton("Save", 0, 600, 10, 70, 10);
+  saveButton.moveTo(controlBox);
+  Button areaButton = controller.addButton("SurfaceArea", 0, 450, 100, 70, 10);
+  areaButton.moveTo(controlBox);
+  Button volumeButton = controller.addButton("Volume", 0, 550, 100, 70, 10);
+  volumeButton.moveTo(controlBox);
+  Button newButton = controller.addButton("New", 0, 700, 10, 70, 10);
+  newButton.moveTo(controlBox);
+  outputText = controller.addTextlabel("label", outputNumber, 650, 100);
+  outputText.moveTo(controlBox);
+  controller.setAutoDraw(false);
 }
 
 void New() {
