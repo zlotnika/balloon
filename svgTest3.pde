@@ -26,7 +26,7 @@ Button subdivideButton;
 Boolean sub = false;
 Boolean newBoolean = false;
 Textlabel outputText;
-String outputNumber = "0";
+String outputNumber = "";
 boolean Inflate = false;
 boolean Texture = false;
 int Subdivisions = 0;
